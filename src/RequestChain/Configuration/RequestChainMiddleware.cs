@@ -43,8 +43,15 @@ namespace RequestChain.Configuration
 
             TimeSpan requestTime = DateTime.Now - start;
 
-            _logger.Log(options.RequestBeginEndLogLevel, "End request {0} ({1} ms)", 
-                requestId.Value, requestTime.Milliseconds);
+            string statusCodeStr = string.Empty;
+            
+            if (context.Response.StatusCode != default(int))
+            {
+                statusCodeStr = $"with status code {context.Response.StatusCode} ";
+            }
+
+            _logger.Log(options.RequestBeginEndLogLevel, "End request {0} {2}({1} ms)", 
+                requestId.Value, requestTime.Milliseconds, statusCodeStr);
         }
 
     }
