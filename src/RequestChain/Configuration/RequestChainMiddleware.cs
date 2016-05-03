@@ -28,8 +28,16 @@ namespace RequestChain.Configuration
 
             DateTime start = DateTime.Now;
 
+            string requestDepth = string.Empty;
+
+            if (options.IncludeRequestDepth && requestId.HasValidDepth)
+            {
+                requestDepth = $"(Depth {requestId.Depth}) ";
+            }
+
             _logger.Log(options.RequestBeginEndLogLevel,
-                "Begin request {0} for {1}", requestId.Value, context.Request.Path);
+                "Begin request {0} {1}for {2} on {3}", 
+                requestId.Value, requestDepth, context.Request.Path, context.Request.PathBase);
                 
             await _next.Invoke(context);
 
