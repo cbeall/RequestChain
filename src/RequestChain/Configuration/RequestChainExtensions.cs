@@ -27,7 +27,7 @@ namespace RequestChain.Configuration
         public static IRequestChainBuilder AddRequestChain(this IServiceCollection services, RequestChainOptions options)
         {
             services.AddInstance(options);
-            services.AddScoped<IRequestId, RequestId>();
+            services.AddScoped<IRequestId, RequestId>(a => new RequestId());
 
             return new RequestChainBuilder(services);
         }

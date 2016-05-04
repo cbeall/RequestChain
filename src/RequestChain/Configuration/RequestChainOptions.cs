@@ -4,9 +4,9 @@ namespace RequestChain.Configuration
 {
     public class RequestChainOptions
     {
-        private const string REQUESTID_DEFAULT_HEADER = "RC-RequestId";
+        public const string DefaultRequestIdHeader = "RC-RequestId";
 
-        public string RequestIdHeaderKey { get; set; } = REQUESTID_DEFAULT_HEADER;
+        public string RequestIdHeaderKey { get; set; } = DefaultRequestIdHeader;
 
         public bool IncludeRequestDepth { get; set; } = true;
         public bool ThrowOnMalformedRequestHeaders { get; set; } = false;

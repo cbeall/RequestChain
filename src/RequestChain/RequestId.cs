@@ -15,6 +15,9 @@ namespace RequestChain
         private static ILogger _logger;
         internal const char SplitCharacter = ':';
 
+        internal RequestId()
+        { }
+
         /// <summary>
         /// Unique request identifier derived by orignating request and passed to subsequent service calls.
         /// </summary>
@@ -66,9 +69,16 @@ namespace RequestChain
 
             if (Equals(existingRequestIdHeader, default(KeyValuePair<string, StringValues>)))
             {
+                // No request id set... creating a new one.
+
+                // Sets value in object
                 _requestId = Guid.NewGuid();
-                _logger?.Log(options.RequestIdCreatedLogLevel, "RequestId created: {0}", _requestId);
                 _requestDepth = 0;
+
+                // Add it to the request header
+                request.Headers.Add(options.RequestIdHeaderKey, $"{_requestId}:0");
+
+                _logger?.Log(options.RequestIdCreatedLogLevel, "RequestId created: {0}", _requestId);
 
                 return false;
             }

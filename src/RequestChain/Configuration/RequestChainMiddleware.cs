@@ -22,15 +22,17 @@ namespace RequestChain.Configuration
             RequestId.SetLogger(loggerFactory.CreateLogger<RequestId>());
         }
 
-        public async Task Invoke(HttpContext context, RequestId requestId, RequestChainOptions options)
+        public async Task Invoke(HttpContext context, IRequestId requestId, RequestChainOptions options)
         {
-            requestId.SetRequestId(context.Request, options);
+            RequestId settableRequestId = requestId as RequestId;
+
+            settableRequestId.SetRequestId(context.Request, options);
 
             DateTime start = DateTime.Now;
 
             string requestDepth = string.Empty;
 
-            if (options.IncludeRequestDepth && requestId.HasValidDepth)
+            if (options.IncludeRequestDepth && settableRequestId.HasValidDepth)
             {
                 requestDepth = $"(Depth {requestId.Depth}) ";
             }
@@ -53,6 +55,5 @@ namespace RequestChain.Configuration
             _logger.Log(options.RequestBeginEndLogLevel, "End request {0} {2}({1} ms)", 
                 requestId.Value, requestTime.Milliseconds, statusCodeStr);
         }
-
     }
 }
