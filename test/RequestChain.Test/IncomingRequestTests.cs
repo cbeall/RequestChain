@@ -37,5 +37,28 @@ namespace RequestChain.Test
             result.Should()
                 .Be(0);
         }
+
+        [Fact]
+        public async Task RequestHeader_OriginalRequest_HeaderSetOnRequest()
+        {
+            Guid requestIdGuid;
+            int requestIdDepth;
+
+            var result = await _fixture.DefaultClient.MakeRequestAndGetRequestHeader();
+
+            result.Should()
+                .NotBeNullOrWhiteSpace();
+            result.Split(':')
+                .Should()
+                .HaveCount(2);
+            Guid.TryParse(result.Split(':')[0], out requestIdGuid)
+                .Should()
+                .BeTrue();
+            int.TryParse(result.Split(':')[1], out requestIdDepth)
+                .Should()
+                .BeTrue();
+            requestIdDepth.Should()
+                .Be(0);
+        }
     }
 }

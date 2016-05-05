@@ -75,7 +75,7 @@ namespace RequestChain
                 _requestId = Guid.NewGuid();
                 _requestDepth = 0;
 
-                // Add it to the request header
+                // Add it to the request header which is important if request sent through reverse proxy
                 request.Headers.Add(options.RequestIdHeaderKey, $"{_requestId}:0");
 
                 _logger?.Log(options.RequestIdCreatedLogLevel, "RequestId created: {0}", _requestId);
