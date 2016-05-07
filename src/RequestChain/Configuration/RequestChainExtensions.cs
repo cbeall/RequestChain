@@ -28,6 +28,7 @@ namespace RequestChain.Configuration
         {
             services.AddInstance(options);
             services.AddScoped<IRequestId, RequestId>(a => new RequestId());
+            services.AddScoped<IRequestChainHttpClientFactory, RequestChainHttpClientFactory>();
 
             return new RequestChainBuilder(services);
         }

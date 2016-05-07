@@ -9,6 +9,10 @@
     "net451": {
       "frameworkAssemblies": {
         "System.Runtime": "4.0.10.0"
+      },
+      "dependencies": {
+        "Microsoft.Net.Http": "2.2.22",
+        "System.Net.Http": "4.0.1-rc2-23819"
       }
     },
     "dotnet5.4": {
@@ -16,6 +20,7 @@
         "Microsoft.CSharp": "4.0.1-beta-23516",
         "System.Collections": "4.0.11-beta-23516",
         "System.Linq": "4.0.1-beta-23516",
+        "System.Net.Http": "4.0.1-beta-23516",
         "System.Runtime": "4.0.21-beta-23516",
         "System.Threading": "4.0.11-beta-23516"
       }
