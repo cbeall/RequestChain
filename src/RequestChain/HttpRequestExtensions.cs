@@ -1,5 +1,4 @@
-﻿using RequestChain.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -9,21 +8,13 @@ namespace RequestChain
 {
     public static class HttpRequestExtensions
     {
-        public static void AddRequestChainHeader(this HttpRequestMessage request, IRequestId requestId, 
-            RequestChainOptions options)
+        public static void ApplyRequestChainHeader(this HttpRequestMessage request, IRequestId requestId)
         {
-            request.Headers.AddRequestChainHeader(requestId, options);
+            request.Headers.ApplyRequestChainHeader(requestId);
         }
 
-
-        public static void AddRequestChainHeader(this HttpRequestHeaders headers, IRequestId requestId,
-            RequestChainOptions options)
+        public static void ApplyRequestChainHeader(this HttpRequestHeaders headers, IRequestId requestId)
         {
-            if (headers.Contains(options.RequestIdHeaderKey))
-            {
-                throw new InvalidOperationException("Attempted to set RequestChainHeader when it already exists");
-            }
-
             string headerValue = requestId.Value.ToString();
 
             if (requestId.Depth.HasValue)
@@ -32,7 +23,25 @@ namespace RequestChain
                 headerValue = $"{requestId.Value}:{newDepth}";
             }
 
-            headers.Add(options.RequestIdHeaderKey, headerValue);
+            var existingHeader = headers
+                .FirstOrDefault(a => string.Equals(a.Key, requestId.RequestChainHeaderKey));
+
+            if (!Equals(existingHeader, default(KeyValuePair<string, IEnumerable<string>>)))
+            {
+                if (existingHeader.Value.Any(a => string.Equals(a, headerValue, StringComparison.OrdinalIgnoreCase)))
+                {
+                    // Header is already in place... exit adding process
+                    return;
+                }
+                else
+                {
+                    var firstHeader = existingHeader.Value.FirstOrDefault();
+                    var msg = $"Attempted to set RequestChainHeader when it already exists and does not match (\"{firstHeader}\")";
+                    throw new InvalidOperationException(msg);
+                }
+            }
+
+            headers.Add(requestId.RequestChainHeaderKey, headerValue);
         }
     }
 }

@@ -12,11 +12,21 @@ namespace RequestChain
     {
         private Guid _requestId;
         private int? _requestDepth;
+        private readonly RequestChainOptions _options;
+
         private static ILogger _logger;
         internal const char SplitCharacter = ':';
 
-        internal RequestId()
-        { }
+        internal RequestId(RequestChainOptions options)
+        {
+            if (options == default(RequestChainOptions))
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            _options = options;
+        }
+
 
         /// <summary>
         /// Unique request identifier derived by orignating request and passed to subsequent service calls.
@@ -42,6 +52,17 @@ namespace RequestChain
             get
             {
                 return _requestDepth;
+            }
+        }
+
+        /// <summary>
+        /// The header key for RequestChain
+        /// </summary>
+        public string RequestChainHeaderKey
+        {
+            get
+            {
+                return _options.RequestIdHeaderKey;
             }
         }
 

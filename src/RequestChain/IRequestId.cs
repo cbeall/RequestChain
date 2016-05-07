@@ -13,5 +13,10 @@ namespace RequestChain
         /// Depth of request call (0 is originating quest)
         /// </summary>
         int? Depth { get; }
+
+        /// <summary>
+        /// The header key for RequestChain
+        /// </summary>
+        string RequestChainHeaderKey { get; }
     }
 }
