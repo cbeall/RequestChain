@@ -2,7 +2,7 @@
 
 namespace RequestChain
 {
-    public interface IRequestId
+    public interface IRequestId : IEquatable<IRequestId>
     {
         /// <summary>
         /// Unique request identifier derived by orignating request and passed to subsequent service calls.

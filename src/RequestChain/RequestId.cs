@@ -173,5 +173,26 @@ namespace RequestChain
 
             _logger = logger;
         }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as RequestId);
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode() ^ Depth.GetHashCode();
+        }
+
+        public bool Equals(IRequestId other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return Value.Equals(other.Value)
+                && Equals(Depth, other.Depth);
+        }
     }
 }
