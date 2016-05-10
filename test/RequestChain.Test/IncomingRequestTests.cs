@@ -84,5 +84,25 @@ namespace RequestChain.Test
                     .Be(expectedId, "the requestId comes from the existing request");
             }
         }
+
+        [Fact]
+        public async Task RequestDepth_ExistingRequest_AddsOne()
+        {
+            var originalDepth = 4;
+            var expectedDepth = 5;
+            var existingRequestId = new RequestIdBuilder()
+                .WithDepth(originalDepth)
+                .Build();
+
+            using (var client = _fixture.CreateClient())
+            {
+                client.ApplyRequestChain(existingRequestId);
+
+                var result = await client.MakeRequestAndGetRequestDepth();
+
+                result.Should()
+                    .Be(expectedDepth, "the original depth should increment when ApplyRequestChain is called on client");
+            }
+        }
     }
 }
