@@ -19,7 +19,7 @@ namespace RequestChain.Test
 
             if(!result.IsSuccessStatusCode)
             {
-                throw new InvalidOperationException("Depth not found");
+                throw new InvalidOperationException($"Depth not found ({result.StatusCode})");
             }
 
             var str = await result.Content.ReadAsStringAsync();

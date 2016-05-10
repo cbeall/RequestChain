@@ -58,29 +58,41 @@ namespace RequestChain.Test
             app.Map("/depth", a => a.Run(GetRequestDepth));
             app.Map("/header", a => a.Run(GetRequestHeader));
 
-            app.Run(a =>
+            app.Run(async a =>
             {
-                a.Response.StatusCode = 404;
-                return Task.FromResult(0);
+                a.Response.StatusCode = 400;
+                await a.Response.WriteAsync("Did not use a known test method.");
             });
-
         }
 
         private async Task GetRequestId(HttpContext context)
         {
-            await context.Response.WriteAsync(context.GetRequestId().Value.ToString());
-            context.Response.StatusCode = 200;
+            var requestId = context.GetRequestId();
+
+            if (!requestId.Value.Equals(default(Guid)))
+            {
+                await context.Response.WriteAsync(requestId.Value.ToString());
+                context.Response.StatusCode = 200;
+            }
+            else
+            {
+                context.Response.StatusCode = 500;
+            }
         }
 
         private async Task GetRequestDepth(HttpContext context)
         {
-            if (context.GetRequestId().Depth.HasValue)
+            var requestId = context.GetRequestId();
+
+            if (requestId.Depth.HasValue)
             {
-                await context.Response.WriteAsync(context.GetRequestId().Depth.Value.ToString());
+                await context.Response.WriteAsync(requestId.Depth.Value.ToString());
                 context.Response.StatusCode = 200;
             }
-
-            context.Response.StatusCode = 404;
+            else
+            {
+                context.Response.StatusCode = 404;
+            }
         }
 
         private async Task GetRequestHeader(HttpContext context)
