@@ -20,10 +20,12 @@ namespace RequestChain.Test
         public DefaultServerFixture()
         {
             _server = new RequestIdTestServer();
-            DefaultClient = _server.DefaultClient;
         }
 
-        public HttpClient DefaultClient { get; }
+        public HttpClient CreateClient()
+        {
+            return _server.CreateClient();
+        }
 
         public void Dispose()
         {

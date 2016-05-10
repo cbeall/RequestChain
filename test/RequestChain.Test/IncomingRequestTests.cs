@@ -1,11 +1,7 @@
 ﻿using FluentAssertions;
-using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.TestHost;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -23,19 +19,25 @@ namespace RequestChain.Test
         [Fact]
         public async Task RequestId_OriginalRequest_HasValue()
         {
-            var result = await _fixture.DefaultClient.MakeRequestAndGetRequestId();
+            using (var client = _fixture.CreateClient())
+            {
+                var result = await client.MakeRequestAndGetRequestId();
 
-            result.Should()
-                .NotBe(default(Guid));
+                result.Should()
+                    .NotBe(default(Guid), "it should be created by the server");
+            }
         }
 
         [Fact]
         public async Task RequestDepth_OriginalRequest_Zero()
         {
-            var result = await _fixture.DefaultClient.MakeRequestAndGetRequestDepth();
+            using (var client = _fixture.CreateClient())
+            {
+                var result = await client.MakeRequestAndGetRequestDepth();
 
-            result.Should()
-                .Be(0);
+                result.Should()
+                    .Be(0, "it is the original request which has depth 0");
+            }
         }
 
         [Fact]
@@ -44,21 +46,43 @@ namespace RequestChain.Test
             Guid requestIdGuid;
             int requestIdDepth;
 
-            var result = await _fixture.DefaultClient.MakeRequestAndGetRequestHeader();
+            using (var client = _fixture.CreateClient())
+            {
+                var result = await client.MakeRequestAndGetRequestHeader();
 
-            result.Should()
-                .NotBeNullOrWhiteSpace();
-            result.Split(':')
-                .Should()
-                .HaveCount(2);
-            Guid.TryParse(result.Split(':')[0], out requestIdGuid)
-                .Should()
-                .BeTrue();
-            int.TryParse(result.Split(':')[1], out requestIdDepth)
-                .Should()
-                .BeTrue();
-            requestIdDepth.Should()
-                .Be(0);
+                result.Should()
+                    .NotBeNullOrWhiteSpace();
+                result.Split(':')
+                    .Should()
+                    .HaveCount(2);
+                Guid.TryParse(result.Split(':')[0], out requestIdGuid)
+                    .Should()
+                    .BeTrue();
+                int.TryParse(result.Split(':')[1], out requestIdDepth)
+                    .Should()
+                    .BeTrue();
+                requestIdDepth.Should()
+                    .Be(0);
+            }
+        }
+
+        [Fact]
+        public async Task RequestId_ExistingRequest_MaintainsId()
+        {
+            var expectedId = Guid.NewGuid();
+            var existingRequestId = new RequestIdBuilder()
+                .WithRequetId(expectedId)
+                .Build();
+
+            using (var client = _fixture.CreateClient())
+            {
+                client.ApplyRequestChain(existingRequestId);
+
+                var result = await client.MakeRequestAndGetRequestId();
+
+                result.Should()
+                    .Be(expectedId, "the requestId comes from the existing request");
+            }
         }
     }
 }

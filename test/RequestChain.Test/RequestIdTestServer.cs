@@ -23,16 +23,16 @@ namespace RequestChain.Test
                     services => ConfigureServices(services));
 
             _server = new TestServer(webApplicationBuilder);
-
-            DefaultClient = _server.CreateClient();
         }
 
-        public HttpClient DefaultClient { get; }
+        public HttpClient CreateClient()
+        {
+            return _server.CreateClient();
+        }
 
         public void Dispose()
         {
             _server.Dispose();
-            DefaultClient.Dispose();
         }
 
         private IConfiguration SiteConfiguration()
@@ -57,6 +57,12 @@ namespace RequestChain.Test
             app.Map("/id", a => a.Run(GetRequestId));
             app.Map("/depth", a => a.Run(GetRequestDepth));
             app.Map("/header", a => a.Run(GetRequestHeader));
+
+            app.Run(a =>
+            {
+                a.Response.StatusCode = 404;
+                return Task.FromResult(0);
+            });
 
         }
 
@@ -91,8 +97,10 @@ namespace RequestChain.Test
                 await context.Response.WriteAsync(context.Request.Headers[requestheader].First());
                 context.Response.StatusCode = 200;
             }
-
-            context.Response.StatusCode = 404;
+            else
+            {
+                context.Response.StatusCode = 500;
+            }
         }
     }
 }
