@@ -166,11 +166,6 @@ namespace RequestChain
 
         internal static void SetLogger(ILogger logger)
         {
-            if (_logger != default(ILogger))
-            {
-                throw new InvalidOperationException("Logger for RequestId is already configured");
-            }
-
             _logger = logger;
         }
 

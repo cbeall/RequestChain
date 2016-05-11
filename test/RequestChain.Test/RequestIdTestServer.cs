@@ -16,11 +16,11 @@ namespace RequestChain.Test
     {
         private readonly TestServer _server;
 
-        public RequestIdTestServer()
+        public RequestIdTestServer(RequestChainOptions options = null)
         {
             var webApplicationBuilder = TestServer.CreateBuilder(SiteConfiguration(), 
                     ConfigureApplication, 
-                    services => ConfigureServices(services));
+                    services => ConfigureServices(services, options));
 
             _server = new TestServer(webApplicationBuilder);
         }
@@ -41,13 +41,17 @@ namespace RequestChain.Test
                 .Build();
         }
 
-        private void ConfigureServices(IServiceCollection services)
+        private void ConfigureServices(IServiceCollection services, RequestChainOptions options)
         {
-            services.AddRequestChain(options =>
+            if (options == null)
             {
-                //options.RequestIdHeaderKey = CustomHeaderName;
-                options.IncludeRequestDepth = true;
-            });
+                options = new RequestChainOptions
+                {
+                    IncludeRequestDepth = true
+                };
+            }
+
+            services.AddRequestChain(options);
         }
 
         public void ConfigureApplication(IApplicationBuilder app)
