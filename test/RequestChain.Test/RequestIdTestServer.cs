@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.TestHost;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RequestChain.Configuration;
@@ -18,11 +19,11 @@ namespace RequestChain.Test
 
         public RequestIdTestServer(RequestChainOptions options = null)
         {
-            var webApplicationBuilder = TestServer.CreateBuilder(SiteConfiguration(), 
-                    ConfigureApplication, 
-                    services => ConfigureServices(services, options));
+            var webHostBuilder = new WebHostBuilder()
+                .ConfigureServices(services => ConfigureServices(services, options))
+                .Configure(ConfigureApplication);
 
-            _server = new TestServer(webApplicationBuilder);
+            _server = new TestServer(webHostBuilder);
         }
 
         public HttpClient CreateClient()

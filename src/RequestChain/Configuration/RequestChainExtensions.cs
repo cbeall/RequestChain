@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace RequestChain.Configuration
@@ -26,7 +26,7 @@ namespace RequestChain.Configuration
 
         public static IRequestChainBuilder AddRequestChain(this IServiceCollection services, RequestChainOptions options)
         {
-            services.AddInstance(options);
+            services.AddSingleton(options);
             services.AddScoped<IRequestId, RequestId>(a => new RequestId(a.GetService<RequestChainOptions>()));
 
             return new RequestChainBuilder(services);

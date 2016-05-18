@@ -1,15 +1,5 @@
-﻿using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.TestHost;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using RequestChain.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace RequestChain.Test
 {
@@ -31,9 +21,5 @@ namespace RequestChain.Test
         {
             _server.Dispose();
         }
-
-    
-
-      
     }
 }
