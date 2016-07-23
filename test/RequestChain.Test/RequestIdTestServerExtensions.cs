@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -19,7 +20,7 @@ namespace RequestChain.Test
 
             if(!result.IsSuccessStatusCode)
             {
-                throw new InvalidOperationException($"Depth not found ({result.StatusCode})");
+                throw new InvalidOperationException($"Depth depth error ({result.StatusCode})");
             }
 
             var str = await result.Content.ReadAsStringAsync();

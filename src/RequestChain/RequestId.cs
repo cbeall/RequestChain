@@ -91,14 +91,7 @@ namespace RequestChain
             if (Equals(existingRequestIdHeader, default(KeyValuePair<string, StringValues>)))
             {
                 // No request id set... creating a new one.
-
-                // Sets value in object
-                _requestId = Guid.NewGuid();
-                _requestDepth = 0;
-
-                // Add it to the request header which is important if request sent through reverse proxy
-                request.Headers.Add(options.RequestIdHeaderKey, $"{_requestId}:0");
-
+                CreateNewRequestId(request, options);
                 _logger?.Log(options.RequestIdCreatedLogLevel, "RequestId created: {0}", _requestId);
 
                 return false;
@@ -114,8 +107,7 @@ namespace RequestChain
                 }
                 else
                 {
-                    _requestId = Guid.NewGuid();
-                    _requestDepth = 0;
+                    CreateNewRequestId(request, options);
 
                     _logger?.Log(options.RequestIdHeaderMalformedLogLevel, 
                         "RequestId in header was not in correct format \"{0}\". Replacing with new RequestId: {1}",
@@ -126,16 +118,38 @@ namespace RequestChain
             }
             else
             {
-                _requestDepth = GetRequestDepth(requestIdStr, options);
+                _requestDepth = GetRequestDepth(requestIdStr, options, request.Headers);
             }
 
             return true;
         }
 
-        private int? GetRequestDepth(string requestIdString, RequestChainOptions options)
+        private void CreateNewRequestId(HttpRequest request, RequestChainOptions options)
+        {
+            // Sets value in object
+            _requestId = Guid.NewGuid();
+            string requestHeaderValue;
+
+            if (options.IncludeRequestDepth)
+            {
+                _requestDepth = 0;
+                requestHeaderValue = $"{_requestId}:0";
+            }
+            else
+            {
+                _requestDepth = null;
+                requestHeaderValue = _requestId.ToString();
+            }
+
+            // Add it to the request header which is important if request sent through reverse proxy
+            request.Headers.Add(options.RequestIdHeaderKey, requestHeaderValue);
+        }
+
+        private int? GetRequestDepth(string requestIdString, RequestChainOptions options, IHeaderDictionary headers)
         {
             if (!options.IncludeRequestDepth)
             {
+                requestIdString = RemoveDepthFromHeaderIfExists(requestIdString, options, headers);
                 return null;
             }
 
@@ -162,6 +176,17 @@ namespace RequestChain
             }
 
             return requestDepth;
+        }
+
+        private string RemoveDepthFromHeaderIfExists(string requestIdString, RequestChainOptions options, IHeaderDictionary headers)
+        {
+            requestIdString = requestIdString
+                .Split(SplitCharacter)
+                .First();
+
+            headers[options.RequestIdHeaderKey] = requestIdString;
+
+            return requestIdString;
         }
 
         internal static void SetLogger(ILogger logger)

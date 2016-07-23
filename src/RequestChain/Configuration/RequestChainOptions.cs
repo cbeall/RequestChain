@@ -14,5 +14,6 @@ namespace RequestChain.Configuration
         public LogLevel RequestBeginEndLogLevel { get; set; } = LogLevel.Information;
         public LogLevel RequestIdCreatedLogLevel { get; set; } = LogLevel.Information;
         public LogLevel RequestIdHeaderMalformedLogLevel { get; set; } = LogLevel.Warning;
+        public LogLevel RequestDepthDisregardedLogLevel { get; set; } = LogLevel.Information;
     }
 }

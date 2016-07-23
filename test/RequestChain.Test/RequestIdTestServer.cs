@@ -96,7 +96,7 @@ namespace RequestChain.Test
             }
             else
             {
-                context.Response.StatusCode = 404;
+                context.Response.StatusCode = 204;
             }
         }
 

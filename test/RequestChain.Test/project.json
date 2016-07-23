@@ -1,5 +1,4 @@
 ﻿{
-  "version": "1.0.0-*",
   "testRunner": "xunit",
 
   "frameworks": {
@@ -8,7 +7,7 @@
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
-          "version": "1.0.0-rc2-3002702"
+          "version": "1.0.0"
         }
       },
       "imports": [
@@ -18,12 +17,12 @@
     }
   },
   "dependencies": {
-    "FluentAssertions": "4.5.0",
+    "FluentAssertions": "4.12.0",
     "Mendham.Testing": "1.0.0-beta6",
-    "Microsoft.AspNetCore.Hosting": "1.0.0-*",
-    "Microsoft.AspNetCore.TestHost": "1.0.0-*",
+    "Microsoft.AspNetCore.Hosting": "1.0.0",
+    "Microsoft.AspNetCore.TestHost": "1.0.0",
     "RequestChain": "0.1.0-*",
-    "xunit": "2.1.0",
-    "dotnet-test-xunit": "1.0.0-rc2-build10015"
+    "xunit": "2.2.0-beta2-build3300",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029"
   }
 }
