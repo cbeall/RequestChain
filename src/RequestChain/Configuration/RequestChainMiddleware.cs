@@ -50,12 +50,12 @@ namespace RequestChain.Configuration
             string statusCodeStr = string.Empty;
             if (context.Response.StatusCode != default(int))
             {
-                statusCodeStr = $"with status code {context.Response.StatusCode} ";
+                statusCodeStr = $" with status code {context.Response.StatusCode} ";
             }
 
             // Log end of request
             TimeSpan requestTime = DateTime.Now - start;
-            _logger.Log(options.RequestBeginEndLogLevel, "End request {0} {2}({1} ms)", 
+            _logger.Log(options.RequestBeginEndLogLevel, "End request {0} {2} ms{1}", 
                 requestId.Value, requestTime.Milliseconds, statusCodeStr);
         }
     }
