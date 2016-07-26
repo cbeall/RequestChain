@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "0.1.0-*",
 
   "frameworks": {
@@ -9,6 +9,7 @@
     }
   },
   "dependencies": {
+    "Microsoft.AspNetCore.Http": "1.0.0",
     "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
     "Microsoft.Extensions.Logging.Abstractions": "1.0.0",

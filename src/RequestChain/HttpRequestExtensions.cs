@@ -30,7 +30,7 @@ namespace RequestChain
             {
                 if (existingHeader.Value.Any(a => string.Equals(a, headerValue, StringComparison.OrdinalIgnoreCase)))
                 {
-                    // Header is already in place... exit adding process
+                    // Header is already in place... exit no need to proceed
                     return;
                 }
                 else

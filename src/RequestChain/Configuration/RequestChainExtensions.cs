@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace RequestChain.Configuration
 {
@@ -29,7 +32,26 @@ namespace RequestChain.Configuration
             services.AddSingleton(options);
             services.AddScoped<IRequestId, RequestId>(a => new RequestId(a.GetService<RequestChainOptions>()));
 
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<BackchannelHttpHandler>();
+
             return new RequestChainBuilder(services);
+        }
+
+        public static BackchannelHttpHandler GetRequestChainBackchannelHttpHandler(this IServiceProvider serviceProvider)
+        {
+            return serviceProvider.GetService<BackchannelHttpHandler>();
+        }
+
+        public static BackchannelHttpHandler GetRequestChainBackchannelHttpHandler(this IServiceProvider serviceProvider, HttpMessageHandler innerMessageHandler)
+        {
+            if (innerMessageHandler == default(HttpMessageHandler))
+            {
+                throw new ArgumentNullException(nameof(innerMessageHandler));
+            }
+
+            var httpAccessor = serviceProvider.GetService<IHttpContextAccessor>();
+            return new BackchannelHttpHandler(httpAccessor, innerMessageHandler);
         }
     }
 }
